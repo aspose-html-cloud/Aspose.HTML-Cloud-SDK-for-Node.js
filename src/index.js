@@ -31,16 +31,18 @@
         define(['ApiClient',
             'api/ConversionApi',
             'api/VectorizationApi',
-            'api/StorageApi'], factory);
+            'api/StorageApi',
+            'model/PdfMetadata'], factory);
     } else if (typeof module === 'object' && module.exports) {
         // CommonJS-like environments that support module.exports, like Node.
         module.exports = factory(require('./ApiClient'),
             require('./api/ConversionApi'),
             require('./api/VectorizationApi'),
-            require('./api/StorageApi')
+            require('./api/StorageApi'),
+            require('./model/PdfMetadata')
         );
     }
-}(function (ApiClient, ConversionApi, VectorizationApi, StorageApi) {
+}(function (ApiClient, ConversionApi, VectorizationApi, StorageApi, PdfMetadata) {
     'use strict';
 
     /**
@@ -97,7 +99,14 @@
          * The StorageApi service constructor.
          * @property {module:api/StorageApi}
          */
-        StorageApi: StorageApi
+        StorageApi: StorageApi,
+
+        /**
+         * The PdfMetadata model constructor. Represents PDF /Info dictionary
+         * metadata that can be attached to a ConversionRequest for PDF output.
+         * @property {module:model/PdfMetadata}
+         */
+        PdfMetadata: PdfMetadata
 
     };
 

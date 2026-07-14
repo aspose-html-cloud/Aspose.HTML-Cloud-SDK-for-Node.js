@@ -30,6 +30,7 @@ All URIs are relative to *https://api.aspose.cloud/v4.0*
 | [**DocOptions**](ConversionOptions.md#DocOptions)           | Convert to the DOCX format.                       |
 | [**SvgOptions**](ConversionOptions.md#SvgOptions)           | Trace images to the SVG format.                   |
 | [**MarkdownOptions**](ConversionOptions.md#MarkdownOptions) | Convert the HTML document to the markdown format. |
+| [**PdfMetadata**](PdfMetadata.md)                           | PDF /Info dictionary metadata for PDF output.     |
 
 ## convertLocalToLocal
 > convertLocalToLocal(src, dst, opts, function (err, data, res);

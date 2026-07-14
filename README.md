@@ -236,6 +236,7 @@ All URIs are relative to *https://api.aspose.cloud/v4.0*
  - [Asposehtmlcloud.ObjectExist](docs/ObjectExist.md)
  - [Asposehtmlcloud.StorageExist](docs/StorageExist.md)
  - [Asposehtmlcloud.StorageFile](docs/StorageFile.md)
+ - [Asposehtmlcloud.PdfMetadata](docs/PdfMetadata.md)
 
 ## Run tests
 ```shell

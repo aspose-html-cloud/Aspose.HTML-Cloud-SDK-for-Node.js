@@ -1,6 +1,6 @@
 {
   "name": "@asposecloud/aspose-html-cloud",
-  "version": "25.10.1",
+  "version": "26.7.1",
   "description": "Aspose.Html Cloud Node.js SDK",
   "license": "MIT",
   "main": "./src/index.js",

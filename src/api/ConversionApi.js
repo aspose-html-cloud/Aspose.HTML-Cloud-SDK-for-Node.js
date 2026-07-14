@@ -28,18 +28,26 @@
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['ApiClient', 'api/StorageApi'], factory);
+        define(['ApiClient', 'api/StorageApi', 'model/PdfMetadata'], factory);
     } else if (typeof module === 'object' && module.exports) {
         // CommonJS-like environments that support module.exports, like Node.
-        module.exports = factory(require('../ApiClient') , require('../api/StorageApi'));
+        module.exports = factory(
+            require('../ApiClient'),
+            require('../api/StorageApi'),
+            require('../model/PdfMetadata')
+        );
     } else {
         // Browser globals (root is window)
         if (!root.Asposehtmlcloud) {
             root.Asposehtmlcloud = {};
         }
-        root.Asposehtmlcloud.ConversionApi = factory(root.Asposehtmlcloud.ApiClient, root.Asposehtmlcloud.StorageApi);
+        root.Asposehtmlcloud.ConversionApi = factory(
+            root.Asposehtmlcloud.ApiClient,
+            root.Asposehtmlcloud.StorageApi,
+            root.Asposehtmlcloud.PdfMetadata
+        );
     }
-}(this, function (ApiClient, StorageApi) {
+}(this, function (ApiClient, StorageApi, PdfMetadata) {
     'use strict';
 
     /**
@@ -246,6 +254,11 @@
          * @param {Number} options.rightMargin Right resulting margin in pixels. (optional)
          * @param {Number} options.topMargin Top resulting margin in pixels. (optional)
          * @param {Number} options.bottomMargin Bottom resulting margin in pixels. (optional)
+         * @param {Number} options.resolution DPI for rendered image output (PNG, JPEG, BMP, GIF, TIFF, WEBP). Default 96. Ignored for non-image outputs. (optional)
+         * @param {String} options.pageSize Named page size (e.g. "A4", "Letter"). (optional)
+         * @param {String} options.background CSS background color like '#FF0000'. For conversion from SVG only. (optional)
+         * @param {Number} options.jpegQuality JPEG quality in percent. (optional)
+         * @param {module:model/PdfMetadata|Object} options.pdfMetadata Optional PDF /Info dictionary metadata. Only meaningful when converting to PDF; silently ignored for other output formats. Any of: title, author, subject, keywords, creator, producer, creationDate, modificationDate. Unset fields keep engine defaults. (optional)
          * @param {String} storage Name of the storage. (optional)
          * @param {module:api/ConversionApi~convert} callback The callback function, accepting three arguments: error, data, response
          * data is of type: {@link OperationResult}
@@ -253,6 +266,22 @@
         this.convert = function (src, dst, srcInLocal, dstInLocal, isUrl, options, storage, callback) {
             options = options || {};
             storage = storage || "";
+
+            // pdfMetadata is a top-level property of ConversionRequest, not part of
+            // the `options` dictionary. Extract it from the caller-supplied options
+            // bag (a convenient place for JS callers to put it) and serialize with
+            // null-omit semantics so unset fields aren't sent as null.
+            var pdfMetadata = PdfMetadata.serialize(options.pdfMetadata);
+            if (options.pdfMetadata !== undefined) {
+                // Rebuild options without pdfMetadata so it isn't sent under `options`.
+                var cleaned = {};
+                for (var k in options) {
+                    if (Object.prototype.hasOwnProperty.call(options, k) && k !== 'pdfMetadata') {
+                        cleaned[k] = options[k];
+                    }
+                }
+                options = cleaned;
+            }
 
             if (src === undefined || src === null) {
                 throw new Error("Missing the required parameter 'source'");
@@ -320,8 +349,11 @@
                     if(storage) {
                         postBody['StorageName'] = storage;
                     }
-                    if(options) {
+                    if(options && Object.keys(options).length > 0) {
                         postBody['options'] = options;
+                    }
+                    if(pdfMetadata) {
+                        postBody['pdfMetadata'] = pdfMetadata;
                     }
 
                     this.createConversion(pathParams, postBody, dstInLocal, dst, storage, callback);
@@ -332,8 +364,11 @@
                 if(storage) {
                     postBody['StorageName'] = storage;
                 }
-                if(options) {
+                if(options && Object.keys(options).length > 0) {
                     postBody['options'] = options;
+                }
+                if(pdfMetadata) {
+                    postBody['pdfMetadata'] = pdfMetadata;
                 }
 
                 this.createConversion(pathParams, postBody, dstInLocal, dst, storage, callback);
