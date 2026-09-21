@@ -39,11 +39,20 @@
 }(this, function(expect, Asposehtmlcloud) {
 
 'use strict';
+    // Credentials come from the environment so CI (or the SDK test agent) can
+    // run against its own subscription; the literals stay as a local fallback.
+    function cred(names, fallback) {
+        for (var i = 0; i < names.length; i++) {
+            if (process.env[names[i]]) { return process.env[names[i]]; }
+        }
+        return fallback;
+    }
+
     var conf = {
         "basePath":"https://api.aspose.cloud/v4.0",
         "authPath":"https://api.aspose.cloud/connect/token",
-        "apiKey":"c8dda7d6445d82635b8797d1c8edd153",
-        "appSID":"2225baa2-097b-4731-9831-d0d56c28230f",
+        "apiKey":cred(["ASPOSE_CLIENT_SECRET", "APP_KEY"], "c8dda7d6445d82635b8797d1c8edd153"),
+        "appSID":cred(["ASPOSE_CLIENT_ID", "APP_SID"], "2225baa2-097b-4731-9831-d0d56c28230f"),
         // "basePath":"http://localhost:5000/v4.0",
         // "authPath":"https://api-qa.aspose.cloud/connect/token",
         // "apiKey":"html.cloud",
@@ -59,6 +68,10 @@
     var path = require('path');
     var local_dst_folder = __dirname + "/../"+ conf['testResult'];
     var local_src_folder = __dirname + "/../"+ conf['testData'];
+
+    // The result directory is not kept in the repository, so create it here
+    // instead of letting every conversion test fail on a missing path.
+    fs.mkdirSync(local_dst_folder, { recursive: true });
 
 // Get  api
     var api = new Asposehtmlcloud.StorageApi(conf);
