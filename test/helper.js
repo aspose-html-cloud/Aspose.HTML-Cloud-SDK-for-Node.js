@@ -39,20 +39,22 @@
 }(this, function(expect, Asposehtmlcloud) {
 
 'use strict';
-    // Credentials come from the environment so CI (or the SDK test agent) can
-    // run against its own subscription; the literals stay as a local fallback.
-    function cred(names, fallback) {
+    // Credentials are never stored in the repository. Set ASPOSE_CLIENT_ID and
+    // ASPOSE_CLIENT_SECRET (or the APP_SID / APP_KEY aliases) before running
+    // the suite; the SDK test agent does this automatically.
+    function cred(names) {
         for (var i = 0; i < names.length; i++) {
             if (process.env[names[i]]) { return process.env[names[i]]; }
         }
-        return fallback;
+        throw new Error("Missing Aspose Cloud credentials: set one of " +
+                        names.join(" / ") + " in the environment.");
     }
 
     var conf = {
         "basePath":"https://api.aspose.cloud/v4.0",
         "authPath":"https://api.aspose.cloud/connect/token",
-        "apiKey":cred(["ASPOSE_CLIENT_SECRET", "APP_KEY"], "c8dda7d6445d82635b8797d1c8edd153"),
-        "appSID":cred(["ASPOSE_CLIENT_ID", "APP_SID"], "2225baa2-097b-4731-9831-d0d56c28230f"),
+        "apiKey":cred(["ASPOSE_CLIENT_SECRET", "APP_KEY"]),
+        "appSID":cred(["ASPOSE_CLIENT_ID", "APP_SID"]),
         // "basePath":"http://localhost:5000/v4.0",
         // "authPath":"https://api-qa.aspose.cloud/connect/token",
         // "apiKey":"html.cloud",
