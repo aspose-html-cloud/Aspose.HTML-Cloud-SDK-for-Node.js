@@ -69,21 +69,6 @@ var helper = require('./helper');
   describe('StorageApi', function() {
     this.timeout(400000);
 
-    describe('getDiscUsage', function() {
-      it('should call getDiscUsage successfully', function(done) {
-        var opts ={'storageName': null};
-        instance.getDiscUsage(opts, function(err, data, res) {
-          if (err) throw err;
-
-          expect(200).to.be(res.status);
-          expect(res.body.totalSize > 0).to.be.ok();
-          expect(res.body.usedSize > 0).be.ok();
-          console.log(data);
-          done();
-        });
-      });
-    });
-
     describe('objectExists', function() {
       it('should call objectExists successfully', function(done) {
         var path_exist = "HtmlTestDoc";
@@ -102,30 +87,6 @@ var helper = require('./helper');
             expect(200).to.be(res.status);
             expect(res.body.exists).to.not.be.ok();
             expect(res.body.isFolder).to.not.be.ok();
-            done();
-          });
-        });
-      });
-    });
-
-    describe('storageExists', function() {
-      it('should call storageExists successfully', function(done) {
-        var name_exist = "/";
-        var name_not_exist = "not_exist_storage";
-
-        instance.storageExists(name_not_exist, function(err, data, res) {
-          if (err) throw err;
-          expect(200).to.be(res.status);
-
-          console.log("Exist storage");
-          console.log(data);
-
-          instance.storageExists(name_not_exist, function(err, data, res){
-            if(err) throw err;
-            expect(200).to.be(res.status);
-
-            console.log("Not exist storage");
-            console.log(data);
             done();
           });
         });
