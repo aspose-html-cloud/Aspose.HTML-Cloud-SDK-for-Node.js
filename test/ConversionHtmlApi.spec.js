@@ -98,6 +98,41 @@ var helper = require('./helper');
             });
         });
 
+        describe('convertLocalToLocalMultiPageImage', function () {
+            // A multi-page document converted to a raster format is returned as a zip
+            // archive that must be named after the requested output file, e.g. testfile.png.zip.
+            ['png', 'jpeg', 'bmp', 'gif'].forEach(function (fmt) {
+                it('should return zip named after the output file for multi-page html to ' + fmt, function (done) {
+
+                    var src = local_src_folder + "html_file_long.html";
+                    var dst = local_dst_folder + "testfile." + fmt;
+                    var opts = {
+                        'width': 1000,
+                        'height': 300,
+                        'leftMargin': 10,
+                        'rightMargin': 10,
+                        'topMargin': 10,
+                        'bottomMargin': 10
+                    };
+
+                    convert_api.convertLocalToLocal(src, dst, opts, function (err, data, res) {
+                        try {
+                            if (err) throw err;
+                            expect(res.status).to.be(200);
+                            expect(String(data.status).toLowerCase()).to.be('completed');
+                            expect(fs.existsSync(data.file)).to.be(true);
+                            expect(fs.statSync(data.file).size).to.be.greaterThan(0);
+                            var name = path.basename(data.file).toLowerCase();
+                            expect(name).to.contain('testfile.' + fmt + '.zip');
+                            done();
+                        } catch (e) {
+                            done(e);
+                        }
+                    });
+                });
+            });
+        });
+
         describe('convertLocalToStorage', function () {
             it('should call convert local to storage file successfully (html)', function (done) {
 
