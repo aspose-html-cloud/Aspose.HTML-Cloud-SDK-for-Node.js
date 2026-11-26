@@ -202,7 +202,7 @@
             outFile = this.path.parse(dst).base;
 
             if(!dstInLocal){
-                outFile = dst;
+                outFile = ApiClient.toStorageOutputPath(dst);
             }
 
             ext = src.split('.').pop().toLowerCase();

@@ -470,6 +470,21 @@
   };
 
   /**
+   * Normalizes a destination path for the OutputFile field when the result is saved to the storage.
+   * The service treats an OutputFile without a leading '/' as a bare file name and puts the result
+   * into a temporary folder, so relative storage paths get an explicit leading '/'.
+   * Paths with a scheme (e.g. 'storage://...') are left unchanged.
+   * @param {String} path Destination path on the storage.
+   * @returns {String} The path to send as OutputFile.
+   */
+  exports.toStorageOutputPath = function(path) {
+    if (path.indexOf('://') !== -1) {
+      return path;
+    }
+    return path.charAt(0) === '/' ? path : '/' + path;
+  };
+
+  /**
    * Converts a value to the specified type.
    * @param {(String|Object)} data The data to convert, as a string or object.
    * @param {(String|Array.<String>|Object.<String, Object>|Function)} type The type to return. Pass a string for simple types

@@ -297,7 +297,7 @@
             outFile = this.path.parse(dst).base;
 
             if(!dstInLocal){
-                outFile = dst;
+                outFile = ApiClient.toStorageOutputPath(dst);
             }
 
             inputFormat = 'html';
